@@ -45,7 +45,7 @@ namespace Respawn.Graph
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Schema, Name);
+            return (Schema, Name).GetHashCode();
         }
 
         public static bool operator ==(Table? left, Table? right)

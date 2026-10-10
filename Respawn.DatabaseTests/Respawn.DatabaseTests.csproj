@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(IsWindows)' == 'true'">net48;net10.0</TargetFrameworks>
     <NoWarn>$(NoWarn);NU1902;NU1903;NU1904</NoWarn>
   </PropertyGroup>  
   <ItemGroup>
 <!--    <PackageReference Include="IBM.EntityFrameworkCore" Version="8.0.0.400" />-->
-    <PackageReference Include="IBM.EntityFrameworkCore-osx" Version="8.0.0.400" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.5" />
-    <PackageReference Include="MySql.Data" Version="9.2.0" />
-    <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="IBM.EntityFrameworkCore-osx" Version="8.0.0.400" Condition="'$(TargetFramework)' != 'net48'" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.5" Condition="'$(TargetFramework)' != 'net48'" />
+    <PackageReference Include="MySql.Data" Version="9.2.0" Condition="'$(TargetFramework)' != 'net48'" />
+    <PackageReference Include="Npgsql" Version="9.0.3" Condition="'$(TargetFramework)' != 'net48'" />
     <PackageReference Include="NPoco.SqlServer" Version="5.7.1" />
     <PackageReference Include="Shouldly" Version="4.0.3" />
-    <PackageReference Include="Testcontainers.Db2" Version="4.10.0" />
+    <PackageReference Include="Testcontainers.Db2" Version="4.10.0" Condition="'$(TargetFramework)' != 'net48'" />
     <PackageReference Include="Testcontainers.MsSql" Version="4.10.0" />
-    <PackageReference Include="Testcontainers.MySql" Version="4.10.0" />
-    <PackageReference Include="Testcontainers.Oracle" Version="4.10.0" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="4.10.0" />
-    <PackageReference Include="Testcontainers.Xunit" Version="4.10.0" />
+    <PackageReference Include="Testcontainers.MySql" Version="4.10.0" Condition="'$(TargetFramework)' != 'net48'" />
+    <PackageReference Include="Testcontainers.Oracle" Version="4.10.0" Condition="'$(TargetFramework)' != 'net48'" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.10.0" Condition="'$(TargetFramework)' != 'net48'" />
+    <PackageReference Include="Testcontainers.Xunit" Version="4.10.0" Condition="'$(TargetFramework)' != 'net48'" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.7.0" />
-	  <PackageReference Include="Snowflake.Data" Version="4.4.1" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.7.0" Condition="'$(TargetFramework)' != 'net48'" />
+	  <PackageReference Include="Snowflake.Data" Version="4.4.1" Condition="'$(TargetFramework)' != 'net48'" />
+    <PackageReference Include="PolySharp" Version="1.16.0" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Compile Remove="**/*.cs" />
+    <Compile Include="SqlServerNetFrameworkFixture.cs;SqlServerTests.cs;EmptyDbTests.cs;Properties/AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
+    <Compile Remove="SqlServerNetFrameworkFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Respawn\Respawn.csproj" />

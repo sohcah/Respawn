@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -315,7 +315,11 @@ WHERE t.temporal_type = 2";
 
         private static async Task<int> GetEngineEdition(DbConnection connection)
         {
+#if NET48
+            using var command = connection.CreateCommand();
+#else
             await using var command = connection.CreateCommand();
+#endif
             command.CommandText = @"
 SELECT SERVERPROPERTY('EngineEdition');";
             var engineEdition = await command.ExecuteScalarAsync().ConfigureAwait(false);
@@ -324,7 +328,11 @@ SELECT SERVERPROPERTY('EngineEdition');";
 
         private static async Task<byte> GetCompatibilityLevel(DbConnection connection)
         {
+#if NET48
+            using var command = connection.CreateCommand();
+#else
             await using var command = connection.CreateCommand();
+#endif
             command.CommandText = $@"
 SELECT compatibility_level
 FROM sys.databases

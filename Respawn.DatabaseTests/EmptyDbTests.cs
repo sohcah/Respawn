@@ -28,7 +28,11 @@ namespace Respawn.DatabaseTests
             
             var connString = _msSqlContainer.GetConnectionString();
 
+#if NET48
+            using (var connection = new SqlConnection(connString))
+#else
             await using (var connection = new SqlConnection(connString))
+#endif
             {
                 await connection.OpenAsync();
                 using (var database = new Database(connection))

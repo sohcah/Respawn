@@ -14,16 +14,18 @@ jobs:
         os: [ubuntu-latest]
       fail-fast: false
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Setup dotnet
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
-          8.0.x
           10.0.x
     - name: Build and Test
       run: ./Build.ps1
@@ -35,14 +37,21 @@ jobs:
         name: Test Report
         path: artifacts/*.trx
         reporter: dotnet-trx
-    - name: Push to MyGet
-      env:
-        NUGET_URL: https://www.myget.org/F/respawn-ci/api/v3/index.json
-        NUGET_API_KEY: ${{ secrets.MYGET_JBOGARD_CI_API_KEY }}
-      run: ./Push.ps1
-      shell: pwsh
     - name: Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: artifacts
         path: artifacts/**/*
+  net48:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+    - name: Test .NET Framework 4.8
+      run: dotnet test Respawn.UnitTests/Respawn.UnitTests.csproj --configuration Release --framework net48

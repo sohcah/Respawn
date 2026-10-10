@@ -7,6 +7,10 @@
 
 Respawn is a small utility to help in resetting test databases to a clean state. Instead of deleting data at the end of a test or rolling back a transaction, Respawn [resets the database back to a clean, empty state](http://lostechies.com/jimmybogard/2013/06/18/strategies-for-isolating-the-database-in-tests/) by intelligently deleting data from tables.
 
+> [!NOTE]
+> This fork modifies Respawn to retarget to .NET Framework 4.8 and .NET 10.
+> Only the SQL Server support is tested in .NET Framework.
+
 To use, create a `Respawner` and initialize with tables you want to skip, or schemas you want to keep/ignore:
 
 ```csharp

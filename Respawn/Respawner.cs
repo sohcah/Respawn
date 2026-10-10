@@ -102,8 +102,16 @@ namespace Respawn
 
         private async Task ExecuteAlterSystemVersioningAsync(DbConnection connection, string commandText)
         {
+#if NET48
+            using var tx = connection.BeginTransaction();
+#else
             await using var tx = await connection.BeginTransactionAsync().ConfigureAwait(false);
+#endif
+#if NET48
+            using var cmd = connection.CreateCommand();
+#else
             await using var cmd = connection.CreateCommand();
+#endif
 
             cmd.CommandTimeout = Options.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandText = commandText;
@@ -111,13 +119,25 @@ namespace Respawn
 
             await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
+#if NET48
+            tx.Commit();
+#else
             await tx.CommitAsync().ConfigureAwait(false);
+#endif
         }
 
         private async Task ExecuteDeleteSqlAsync(DbConnection connection)
         {
+#if NET48
+            using var tx = connection.BeginTransaction();
+#else
             await using var tx = await connection.BeginTransactionAsync().ConfigureAwait(false);
+#endif
+#if NET48
+            using var cmd = connection.CreateCommand();
+#else
             await using var cmd = connection.CreateCommand();
+#endif
 
             cmd.CommandTimeout = Options.CommandTimeout ?? cmd.CommandTimeout;
             cmd.CommandText = DeleteSql;
@@ -131,13 +151,25 @@ namespace Respawn
                 await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
             }
 
+#if NET48
+            tx.Commit();
+#else
             await tx.CommitAsync().ConfigureAwait(false);
+#endif
         }
 
         private async Task ExecuteDeleteSqlIndividuallyAsync(DbConnection connection)
         {
+#if NET48
+            using var tx = connection.BeginTransaction();
+#else
             await using var tx = await connection.BeginTransactionAsync();
+#endif
+#if NET48
+            using var cmd = connection.CreateCommand();
+#else
             await using var cmd = connection.CreateCommand();
+#endif
 
             var deleteStatements = DeleteSql!.Split([";"], StringSplitOptions.RemoveEmptyEntries);
 
@@ -157,9 +189,17 @@ namespace Respawn
                 await cmd.ExecuteNonQueryAsync();
             }
 
+#if NET48
+            tx.Commit();
+#else
             await tx.CommitAsync();
+#endif
 
+#if NET48
+            tx.Rollback();
+#else
             await tx.RollbackAsync();
+#endif
         }
 
         private async Task BuildDeleteTables(DbConnection connection)
@@ -190,11 +230,19 @@ namespace Respawn
             var relationships = new HashSet<Relationship>();
             var commandText = _dbAdapter.BuildRelationshipCommandText(Options);
 
+#if NET48
+            using var cmd = connection.CreateCommand();
+#else
             await using var cmd = connection.CreateCommand();
+#endif
 
             cmd.CommandText = commandText;
 
+#if NET48
+            using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+#else
             await using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+#endif
 
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
@@ -213,11 +261,19 @@ namespace Respawn
 
             var commandText = _dbAdapter.BuildTableCommandText(Options);
 
+#if NET48
+            using var cmd = connection.CreateCommand();
+#else
             await using var cmd = connection.CreateCommand();
+#endif
 
             cmd.CommandText = commandText;
 
+#if NET48
+            using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+#else
             await using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+#endif
 
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
@@ -233,11 +289,19 @@ namespace Respawn
 
             var commandText = _dbAdapter.BuildTemporalTableCommandText(Options);
 
+#if NET48
+            using var cmd = connection.CreateCommand();
+#else
             await using var cmd = connection.CreateCommand();
+#endif
 
             cmd.CommandText = commandText;
 
+#if NET48
+            using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+#else
             await using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+#endif
 
             while (await reader.ReadAsync().ConfigureAwait(false))
             {

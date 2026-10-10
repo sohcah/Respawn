@@ -4,12 +4,13 @@
     <Description>Intelligent resetting for database tests</Description>
     <Copyright>Copyright Jimmy Bogard</Copyright>
     <Authors>Jimmy Bogard</Authors>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>net48;net10.0</TargetFrameworks>
     <AssemblyName>Respawn</AssemblyName>
-    <PackageId>Respawn</PackageId>
+    <PackageId>Sohcah.Respawn</PackageId>
     <PackageTags>tests;integration tests;database tests</PackageTags>
     <LangVersion>latest</LangVersion>
     <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerVersionOverride>7.0.0-fork.1</MinVerVersionOverride>
     <PackageIcon>logo.png</PackageIcon>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -26,8 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Tasks.Git" Version="10.0.303" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="MinVer" Version="6.0.0" PrivateAssets="All" />
+    <PackageReference Include="PolySharp" Version="1.16.0" PrivateAssets="All" />
   </ItemGroup>
   
 </Project>

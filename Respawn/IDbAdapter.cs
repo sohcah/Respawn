@@ -14,10 +14,14 @@ namespace Respawn
         string BuildReseedSql(IEnumerable<Table> tablesToDelete);
         string BuildTurnOffSystemVersioningCommandText(IEnumerable<TemporalTable> tablesToTurnOffSystemVersioning);
         string BuildTurnOnSystemVersioningCommandText(IEnumerable<TemporalTable> tablesToTurnOnSystemVersioning);
+#if NET48
+        Task<bool> CheckSupportsTemporalTables(DbConnection connection);
+#else
         Task<bool> CheckSupportsTemporalTables(DbConnection connection)
         {
             return Task.FromResult(false);
         }
+#endif
         bool RequiresStatementsToBeExecutedIndividually();
     }
 }
